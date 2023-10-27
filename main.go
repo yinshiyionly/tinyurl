@@ -1,28 +1,34 @@
 package main
 
 import (
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"tinyurl/internal/tinyurl"
-	"tinyurl/pkg/generator"
+    "github.com/gin-gonic/gin"
+    "log"
+    "net/http"
+    "tinyurl/internal/tinyurl"
 )
 
 func main() {
-	//rc := redis.GetRedisClient()
-	//err := rc.Set("sb", 111, 0).Err()
-	//if err != nil {
-	//	fmt.Println("Error setting key:", err)
-	//} else {
-	//	fmt.Println("Key set successfully.")
-	//}
+    //rc := redis.GetRedisClient()
+    //err := rc.Set("sb", 111, 0).Err()
+    //if err != nil {
+    //	fmt.Println("Error setting key:", err)
+    //} else {
+    //	fmt.Println("Key set successfully.")
+    //}
 
-	r := gin.Default()
-	r.POST("/make", tinyurl.Make)
+    r := gin.Default()
+    r.GET("/", func(c *gin.Context) {
+        c.String(http.StatusOK, "Welcome to tinyurl")
+    })
+    r.POST("/make", tinyurl.Make)
 
-	r.GET("/visit", tinyurl.Visit)
+    r.GET("/visit/:shortUrl", tinyurl.Visit)
 
-	r.GET("/recover", tinyurl.Recover)
+    r.GET("/recover", tinyurl.Recover)
 
-	r.Run("0.0.0.0:8089")
-	fmt.Println(generator.Hash("https://www.baidu.com/"))
+    err := r.Run("0.0.0.0:8089")
+    if err != nil {
+        log.Fatalf("gin start error: %v", err)
+    }
+    //fmt.Println(generator.Hash("https://www.baidu.com/"))
 }
